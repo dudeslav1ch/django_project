@@ -16,14 +16,14 @@ class Command(BaseCommand):
     @staticmethod
     def json_read_categories() -> list:
         # Здесь мы получаем данные из фикстур с категориями
-        with open(DATA_CATEGORY) as file:
+        with open(DATA_CATEGORY, encoding="utf-8") as file:
             file_info = json.load(file)
         return [info for info in file_info]
 
     @staticmethod
     def json_read_products() -> list:
         # Здесь мы получаем данные из фикстур с продуктами
-        with open(DATA_PRODUCT) as file:
+        with open(DATA_PRODUCT, encoding="utf-8") as file:
             file_info = json.load(file)
         return [info for info in file_info]
 
