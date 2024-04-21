@@ -13,7 +13,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering = ('category_name',)
+        ordering = ('id',)
 
 
 class Product(models.Model):
@@ -26,9 +26,9 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата последнего изменения', **NULLABLE)
 
     def __str__(self):
-        return f'{self.category} {self.products_name}'
+        return f'{self.products_name} ({self.category})'
 
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
-        ordering = ('products_name',)
+        ordering = ('id',)
