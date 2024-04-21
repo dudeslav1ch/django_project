@@ -1,0 +1,12 @@
+<div class="col">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="card-text">{{ object|title }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'catalog:product_info' object.pk %}" class="text-white">Описание</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
