@@ -55,7 +55,7 @@ class Command(BaseCommand):
             product_for_create.append(
                 Product(category=Category.objects.get(pk=product_fields.get('category')),
                         products_name=product_fields.get('products_name'),
-                        products_description=product_fields.get('product_description'),
+                        products_description=product_fields.get('products_description'),
                         image=product_fields.get('image'),
                         price=product_fields.get('price'))
             )

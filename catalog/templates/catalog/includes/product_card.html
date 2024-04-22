@@ -2,9 +2,10 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <p class="card-text">{{ object|title }}</p>
+            <p class="card-text">{{ object.products_description|truncatechars:100 }}</p>
             <div class="d-flex justify-content-between align-items-center">
                 <ul class="list-unstyled">
-                    <li><a href="{% url 'catalog:product_info' object.pk %}" class="text-white">Описание</a></li>
+                    <li><a href="{% url 'catalog:product_info' object.pk %}" class="text-white">Полное описание</a></li>
                 </ul>
             </div>
         </div>
