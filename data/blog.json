@@ -1,0 +1,28 @@
+[
+  {
+    "model": "catalog.blog",
+    "pk": 1,
+    "fields": {
+      "title": "Блог о жизни",
+      "slug": null,
+      "body": "Жизнь",
+      "preview": "blog/Blog_PnyFpBG.jpg",
+      "created_at": "2024-05-07T19:46:21.357Z",
+      "is_published": true,
+      "views_count": 1
+    }
+  },
+  {
+    "model": "catalog.blog",
+    "pk": 2,
+    "fields": {
+      "title": "Блог о доме",
+      "slug": null,
+      "body": "Дом",
+      "preview": "blog/dfab57e457ffbec54095f5a657f84b93_XkizFrT.jpg",
+      "created_at": "2024-05-07T19:46:45.388Z",
+      "is_published": true,
+      "views_count": 1
+    }
+  }
+]

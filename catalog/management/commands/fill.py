@@ -4,11 +4,12 @@ import pathlib
 from django.core.management import BaseCommand
 from django.db import connection
 
-from catalog.models import Category, Product
+from catalog.models import Category, Product, Blog
 
 ROOT = pathlib.Path(__file__).parent.parent.parent.parent
 DATA_CATEGORY = pathlib.Path(ROOT, 'data', 'category.json')
 DATA_PRODUCT = pathlib.Path(ROOT, 'data', 'product.json')
+DATA_BLOG = pathlib.Path(ROOT, 'data', 'blog.json')
 
 
 class Command(BaseCommand):
@@ -27,17 +28,26 @@ class Command(BaseCommand):
             file_info = json.load(file)
         return [info for info in file_info]
 
+    @staticmethod
+    def json_read_blog() -> list:
+        # Здесь мы получаем данные из фикстур с блогом
+        with open(DATA_BLOG, encoding="utf-8") as file:
+            file_info = json.load(file)
+        return [info for info in file_info]
+
     def handle(self, *args, **options):
         # Очистка базы данных перед заполнением
         Category.objects.all().delete()
         Product.objects.all().delete()
+        Blog.objects.all().delete()
 
         category_for_create = []
         product_for_create = []
+        blog_for_create = []
 
         with connection.cursor() as cursor:
             cursor.execute(
-                "TRUNCATE TABLE catalog_category, catalog_product RESTART IDENTITY CASCADE;")
+                "TRUNCATE TABLE catalog_category, catalog_product, catalog_blog RESTART IDENTITY CASCADE;")
 
         # Заполнение категорий
         for category in Command.json_read_categories():
@@ -46,7 +56,6 @@ class Command(BaseCommand):
                 Category(category_name=category_fields.get('category_name'),
                          category_description=category_fields.get('category_description'))
             )
-
         Category.objects.bulk_create(category_for_create)
 
         # Заполнение продуктов
@@ -60,3 +69,14 @@ class Command(BaseCommand):
                         price=product_fields.get('price'))
             )
         Product.objects.bulk_create(product_for_create)
+
+        # Заполнение блога
+        for blog in Command.json_read_blog():
+            blog_fields = blog.get('fields')
+            blog_for_create.append(
+                Blog(title=blog_fields.get('title'),
+                     body=blog_fields.get('body'),
+                     preview=blog_fields.get('preview'),
+                     is_published=blog_fields.get('is_published'))
+            )
+        Blog.objects.bulk_create(blog_for_create)
