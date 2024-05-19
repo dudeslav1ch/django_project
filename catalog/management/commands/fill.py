@@ -4,7 +4,8 @@ import pathlib
 from django.core.management import BaseCommand
 from django.db import connection
 
-from catalog.models import Category, Product, Blog
+from blog.models import Blog
+from catalog.models import Category, Product
 
 ROOT = pathlib.Path(__file__).parent.parent.parent.parent
 DATA_CATEGORY = pathlib.Path(ROOT, 'data', 'category.json')
@@ -15,23 +16,9 @@ DATA_BLOG = pathlib.Path(ROOT, 'data', 'blog.json')
 class Command(BaseCommand):
 
     @staticmethod
-    def json_read_categories() -> list:
+    def json_read(path) -> list:
         # Здесь мы получаем данные из фикстур с категориями
-        with open(DATA_CATEGORY, encoding="utf-8") as file:
-            file_info = json.load(file)
-        return [info for info in file_info]
-
-    @staticmethod
-    def json_read_products() -> list:
-        # Здесь мы получаем данные из фикстур с продуктами
-        with open(DATA_PRODUCT, encoding="utf-8") as file:
-            file_info = json.load(file)
-        return [info for info in file_info]
-
-    @staticmethod
-    def json_read_blog() -> list:
-        # Здесь мы получаем данные из фикстур с блогом
-        with open(DATA_BLOG, encoding="utf-8") as file:
+        with open(path, encoding="utf-8") as file:
             file_info = json.load(file)
         return [info for info in file_info]
 
@@ -50,7 +37,7 @@ class Command(BaseCommand):
                 "TRUNCATE TABLE catalog_category, catalog_product, catalog_blog RESTART IDENTITY CASCADE;")
 
         # Заполнение категорий
-        for category in Command.json_read_categories():
+        for category in Command.json_read(DATA_CATEGORY):
             category_fields = category.get('fields')
             category_for_create.append(
                 Category(category_name=category_fields.get('category_name'),
@@ -59,7 +46,7 @@ class Command(BaseCommand):
         Category.objects.bulk_create(category_for_create)
 
         # Заполнение продуктов
-        for product in Command.json_read_products():
+        for product in Command.json_read(DATA_PRODUCT):
             product_fields = product.get('fields')
             product_for_create.append(
                 Product(category=Category.objects.get(pk=product_fields.get('category')),
@@ -71,7 +58,7 @@ class Command(BaseCommand):
         Product.objects.bulk_create(product_for_create)
 
         # Заполнение блога
-        for blog in Command.json_read_blog():
+        for blog in Command.json_read(DATA_BLOG):
             blog_fields = blog.get('fields')
             blog_for_create.append(
                 Blog(title=blog_fields.get('title'),
