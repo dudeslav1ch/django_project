@@ -5,12 +5,13 @@ from django.core.management import BaseCommand
 from django.db import connection
 
 from blog.models import Blog
-from catalog.models import Category, Product
+from catalog.models import Category, Product, Version
 
 ROOT = pathlib.Path(__file__).parent.parent.parent.parent
 DATA_CATEGORY = pathlib.Path(ROOT, 'data', 'category.json')
 DATA_PRODUCT = pathlib.Path(ROOT, 'data', 'product.json')
 DATA_BLOG = pathlib.Path(ROOT, 'data', 'blog.json')
+DATA_VERSION = pathlib.Path(ROOT, 'data', 'version.json')
 
 
 class Command(BaseCommand):
@@ -27,14 +28,17 @@ class Command(BaseCommand):
         Category.objects.all().delete()
         Product.objects.all().delete()
         Blog.objects.all().delete()
+        Version.objects.all().delete()
 
         category_for_create = []
         product_for_create = []
         blog_for_create = []
+        version_for_create = []
 
         with connection.cursor() as cursor:
             cursor.execute(
-                "TRUNCATE TABLE catalog_category, catalog_product, catalog_blog RESTART IDENTITY CASCADE;")
+                "TRUNCATE TABLE catalog_category, catalog_product, blog_blog, catalog_version RESTART IDENTITY "
+                "CASCADE;")
 
         # Заполнение категорий
         for category in Command.json_read(DATA_CATEGORY):
@@ -67,3 +71,14 @@ class Command(BaseCommand):
                      is_published=blog_fields.get('is_published'))
             )
         Blog.objects.bulk_create(blog_for_create)
+
+        # Заполнение блога
+        for version in Command.json_read(DATA_VERSION):
+            version_fields = version.get('fields')
+            version_for_create.append(
+                Version(product=Product.objects.get(pk=version_fields.get('product')),
+                        version_number=version_fields.get('version_number'),
+                        version_name=version_fields.get('version_name'),
+                        is_active=version_fields.get('is_active'))
+            )
+        Version.objects.bulk_create(version_for_create)

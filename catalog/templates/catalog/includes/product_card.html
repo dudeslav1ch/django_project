@@ -1,11 +1,27 @@
 <div class="col">
     <div class="card shadow-sm">
         <div class="card-body">
-            <p class="card-text">{{ object|title }}</p>
+            <div class="card-header py-3">
+                <h4 class="my-0 fw-normal">
+                    {{ object|title }}
+                </h4>
+            </div>
             <p class="card-text">{{ object.products_description|truncatechars:100 }}</p>
+            {% if object.version %}
+                <li>Версия № {{ object.version.version_number }}</li>
+                <li>{{ object.version.version_name }}</li>
+            {% endif %}
             <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                    <a href="{% url 'catalog:product_view' object.pk %}"
+                       class="btn btn-sm btn-outline-secondary">View</a>
+                    <a href="{% url 'catalog:product_update' object.pk %}"
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a href="{% url 'catalog:product_delete' object.pk %}"
+                       class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
                 <ul class="list-unstyled">
-                    <li><a href="{% url 'catalog:product_info' object.pk %}" class="text-white">Полное описание</a></li>
+                    <li><a href="{% url 'catalog:product_view' object.pk %}" class="text-white">Полное описание</a></li>
                 </ul>
             </div>
         </div>
